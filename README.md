@@ -28,6 +28,8 @@ $python markdown-imgbed-migrating.py -i ./input -o ./output
 
 - [ ] Mardkwon文件中图片从云端下载到本地。
 
+- [x] 2022.04.27 修复bug，本地图片无法转移。
+
 - [x] 2022.04.27 Mardkwon文件中图片从云端下载到本地。
 
 ## License - 版权信息
