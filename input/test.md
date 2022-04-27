@@ -1,6 +1,16 @@
 # markdown-imgbed-migrating test
 
+
+
+注意：本地图片与网络图片的区别。
+
 ## 1. image format 1 - 图片格式1： `![]()`
+
+本地图片：
+
+![图片1](../assets/20220427224619.png)
+
+网络图片：
 
 ![图片1](https://img2.baidu.com/it/u=1079474055,1657238785&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=281)
 
@@ -11,3 +21,6 @@
 <div align=center>
     <img src=https://img2.baidu.com/it/u=1079474055,1657238785&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=281 width=75% />
 </div>
+## 3. error image url - 错误图片链接：`![]()`
+
+![图片1](https://img2.baidu.com/it/u=1079474055,165723878xxxx)

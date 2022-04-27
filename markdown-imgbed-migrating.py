@@ -16,6 +16,7 @@ import argparse
 import os
 import re
 import glob
+import shutil
 import requests
 import time
 
@@ -61,37 +62,51 @@ def save_img(filename, img):
 
 def process_url2local(input_path, output_path, patterns, headers):
     for filename in glob.glob(os.path.join(input_path, '*.md')):
-        print("processing: ", filename)
+        print("Processing: ", filename)
 
+        path, _ = os.path.split(filename)
         # 解析文本
-        lines = read_md(filename)
+        try:
+            lines = read_md(filename)
 
-        for idx, line in enumerate(lines):
-            for pattern in patterns:
-                urls = match_img(line, pattern)
+            for idx, line in enumerate(lines):
+                for pattern in patterns:
+                    urls = match_img(line, pattern)
 
-                for url in urls:
-                    # print("=======> ", url)
-                    if url == '':
-                        continue
+                    for url in urls:
+                        # print("=======> ", url)
+                        if url == '':
+                            continue
 
-                    ret, img = download_img(url, headers)
-                    if not ret:
-                        print("Download fail.")
-                        continue
+                        # 保存图片，以时间戳为名字
+                        img_name = str(time.strftime('%Y%m%d%H%M%S', time.localtime(int(
+                            time.time())))) + ".png"
+                        new_filename = os.path.join(output_path, 'assets', img_name)
 
-                    # 保存图片，以时间戳为名字
-                    img_name = str(time.strftime('%Y%m%d%H%M%S', time.localtime(int(
-                        time.time())))) + ".png"
-                    new_filename = os.path.join(output_path, 'assets', img_name)
-                    save_img(new_filename, img)
+                        if 'http' in url or 'https' in url:
+                            ret, img = download_img(url, headers)
 
-                    # 修改源文件
-                    lines[idx] = line.replace(url, os.path.join('assets', img_name))
+                            if not ret:
+                                print("Error, download fail.")
+                                continue
 
-            _, name = os.path.split(filename)
-            new_md_filename = os.path.join(output_path, name)
-            write_md(new_md_filename, lines)
+                            save_img(new_filename, img)
+                        else:  # 本地图片
+                            # continue
+                            if ':' in url: # : 判断绝对路径和相对路径
+                                shutil.copyfile(url, new_filename)
+                            else:
+                                shutil.copyfile(os.path.join(path, url), new_filename)
+
+                        # 修改源文件
+                        lines[idx] = line.replace(url, os.path.join('assets', img_name))
+
+                _, name = os.path.split(filename)
+                new_md_filename = os.path.join(output_path, name)
+                write_md(new_md_filename, lines)
+        except Exception as e:
+            print(e)
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Markdown imgbed migrating V1.0")
