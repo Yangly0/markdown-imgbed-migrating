@@ -8,9 +8,7 @@ Markdown文件中图床迁移到本地。
 
 ## Installation - 安装
 
-不需要额外的环境。
-
-No install environment.
+- oss2
 
 ## Requirements - 必要条件
 
@@ -34,10 +32,6 @@ $ pip install oss2
 $ cd markdown-imgbed-migrating
 $ python markdown-imgbed-migrating-v2.py -i ./input -o ./output1
 ```
-
-
-
-
 
 ## Changelog - 更新日志
 
