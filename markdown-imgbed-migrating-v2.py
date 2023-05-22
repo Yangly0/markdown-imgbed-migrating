@@ -108,14 +108,7 @@ def process_img2oss(input_path, output_path, patterns, headers, remote_name, dir
                                 continue
 
                             # 保存图片，以时间戳为名字
-                            img_name = (
-                                str(
-                                    time.strftime(
-                                        "%Y%m%d%H%M%S", time.localtime(int(time.time()))
-                                    )
-                                )
-                                + ".png"
-                            )
+                            img_name = time.strftime('%Y%m%d%H%M%S') + f'{int(time.time() * 1000) %1000:03d}' + '.jpg'
                             new_file_name = f"{dir_path}/{img_name}"
                             oss2_updown_file(
                                 oss_bucket, img, new_file_name, is_file=False
