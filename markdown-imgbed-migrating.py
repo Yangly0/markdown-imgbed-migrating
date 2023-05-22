@@ -13,12 +13,13 @@
 
 # Built-in modules
 import argparse
+import glob
 import os
 import re
-import glob
 import shutil
-import requests
 import time
+
+import requests
 
 # Third-party modules
 # import numpy as np
@@ -42,7 +43,7 @@ def match_img(line, pattern):
 
 def read_md(filename):
 
-    with open(filename, mode="r", encoding='utf-8') as fp:
+    with open(filename, mode="r", encoding="utf-8") as fp:
         lines = fp.readlines()
 
     return lines
@@ -50,18 +51,18 @@ def read_md(filename):
 
 def write_md(filename, lines):
 
-    with open(filename, mode='w', encoding='utf-8') as fp:
+    with open(filename, mode="w", encoding="utf-8") as fp:
         fp.writelines(lines)
 
 
 def save_img(filename, img):
-    fp = open(filename, 'ab')
+    fp = open(filename, "ab")
     fp.write(img)
     fp.close()
 
 
 def process_url2local(input_path, output_path, patterns, headers):
-    for filename in glob.glob(os.path.join(input_path, '*.md')):
+    for filename in glob.glob(os.path.join(input_path, "*.md")):
         print("Processing: ", filename)
 
         path, _ = os.path.split(filename)
@@ -75,16 +76,21 @@ def process_url2local(input_path, output_path, patterns, headers):
 
                     for url in urls:
                         # print("=======> ", url)
-                        if url == '':
+                        if url == "":
                             continue
 
                         # 保存图片，以时间戳为名字
-                        img_name = str(
-                            time.strftime('%Y%m%d%H%M%S', time.localtime(int(
-                                time.time())))) + ".png"
-                        new_filename = os.path.join(output_path, 'assets', img_name)
+                        img_name = (
+                            str(
+                                time.strftime(
+                                    "%Y%m%d%H%M%S", time.localtime(int(time.time()))
+                                )
+                            )
+                            + ".png"
+                        )
+                        new_filename = os.path.join(output_path, "assets", img_name)
 
-                        if 'http' in url or 'https' in url:
+                        if "http" in url or "https" in url:
                             ret, img = download_img(url, headers)
 
                             if not ret:
@@ -94,13 +100,13 @@ def process_url2local(input_path, output_path, patterns, headers):
                             save_img(new_filename, img)
                         else:  # 本地图片
                             # continue
-                            if ':' in url:  # : 判断绝对路径和相对路径
+                            if ":" in url:  # : 判断绝对路径和相对路径
                                 shutil.copyfile(url, new_filename)
                             else:
                                 shutil.copyfile(os.path.join(path, url), new_filename)
 
                         # 修改源文件
-                        lines[idx] = line.replace(url, os.path.join('assets', img_name))
+                        lines[idx] = line.replace(url, os.path.join("assets", img_name))
 
                 _, name = os.path.split(filename)
                 new_md_filename = os.path.join(output_path, name)
@@ -111,30 +117,33 @@ def process_url2local(input_path, output_path, patterns, headers):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Markdown imgbed migrating V1.0")
-    parser.add_argument("-i",
-                        "--input_path",
-                        type=str,
-                        default="./input",
-                        help="Input path of markdown file.")
-    parser.add_argument("-o",
-                        "--output_path",
-                        type=str,
-                        default="./output_path",
-                        help="Ouput path of markdown file.")
+    parser.add_argument(
+        "-i",
+        "--input_path",
+        type=str,
+        default="./input",
+        help="Input path of markdown file.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output_path",
+        type=str,
+        default="./output_path",
+        help="Ouput path of markdown file.",
+    )
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     headers = {
-        "User-Agent":
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1"
+        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1"
     }
 
     args = parse_args()
 
     # 匹配模式
-    patterns = [r'<img src=(.*?) ', r'!\[.*?\][()](.*)[)]']
+    patterns = [r"<img src=(.*?) ", r"!\[.*?\][()](.*)[)]"]
 
     # 文件位置
     input_path = args.input_path
@@ -142,5 +151,5 @@ if __name__ == '__main__':
     output_path = args.output_path
 
     os.makedirs(output_path, exist_ok=True)
-    os.makedirs(os.path.join(output_path, 'assets'), exist_ok=True)
+    os.makedirs(os.path.join(output_path, "assets"), exist_ok=True)
     process_url2local(input_path, output_path, patterns, headers)

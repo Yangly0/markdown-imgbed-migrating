@@ -25,4 +25,4 @@
 
 ![图片1](https://img2.baidu.com/it/u=1079474055,165723878xxxx)
 
-<img src="https://cloud-resources-data.oss-cn-chengdu.aliyuncs.com/blog11/20220427224619.png" />  
+<img src="https://cloud-resources-data.oss-cn-chengdu.aliyuncs.com/blog11/20220427224619.png" />
