@@ -80,14 +80,7 @@ def process_url2local(input_path, output_path, patterns, headers):
                             continue
 
                         # 保存图片，以时间戳为名字
-                        img_name = (
-                            str(
-                                time.strftime(
-                                    "%Y%m%d%H%M%S", time.localtime(int(time.time()))
-                                )
-                            )
-                            + ".png"
-                        )
+                        img_name = time.strftime('%Y%m%d%H%M%S') + f'{int(time.time() * 1000) %1000:03d}' + '.jpg'
                         new_filename = os.path.join(output_path, "assets", img_name)
 
                         if "http" in url or "https" in url:
